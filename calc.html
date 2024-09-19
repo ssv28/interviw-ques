@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .calculator {
+            display: inline-block;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: black;
+        }
+
+        .calculator input {
+            font-size: 20px;
+            width: 90%;
+            text-align: right;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .calculator button {
+            font-size: 20px;
+            width: 30%;
+            padding: 10px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        .calculator button.operator {
+            background-color: #f0ad4e;
+            color: #000;
+        }
+
+        .calculator button.equals {
+            background-color: #5bc0de;
+            color: #000;
+            width: 30%;
+
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="calculator">
+        <input type="text" id="display" disabled placeholder="0">
+
+        <div style="display: flex; justify-content: end;">
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="backspace()">←</button>
+        </div>
+
+        <div style="display: flex;">
+            <button onclick="enterNum('7')">7</button>
+            <button onclick="enterNum('8')">8</button>
+            <button onclick="enterNum('9')">9</button>
+            <button class="operator" onclick="setOperation('*')">*</button>
+        </div>
+        <div style="display: flex;">
+            <button onclick="enterNum('4')">4</button>
+            <button onclick="enterNum('5')">5</button>
+            <button onclick="enterNum('6')">6</button>
+            <button class="operator" onclick="setOperation('/')">/</button>
+        </div>
+        <div style="display: flex;">
+            <button onclick="enterNum('1')">1</button>
+            <button onclick="enterNum('2')">2</button>
+            <button onclick="enterNum('3')">3</button>
+            <button class="operator" onclick="setOperation('-')">-</button>
+        </div>
+        <div style="display: flex;">
+            <button class="equals" onclick="calculate()">=</button>
+            <button onclick="enterNum('0')">0</button>
+            <button class="operator" onclick="setOperation('%')">%</button>
+            <button class="operator" onclick="setOperation('+')">+</button>
+        </div>
+
+
+
+    </div>
+
+
+    <script>
+        let current = '';
+        let operator = '';
+        let previous = '';
+
+
+        function enterNum(number) {
+            current = current + number;
+
+            // Update the display to show the full expression: previous input + operator + current input
+
+            if (operator) {
+                document.getElementById('display').value = previous + ' ' + operator + ' ' + current;
+            } else {
+                document.getElementById('display').value = current;
+            }
+        }
+
+
+
+        function setOperation(op) {
+            if (current === '') return; // Don't set operator if current input is empty
+            if (previous !== '') calculate(); // If there's a previous operation, calculate it first
+            document.getElementById('display').value = current;
+
+            operator = op;       //+ = +
+            previous = current;   //enter 5 so,now pprevious is 5
+            document.getElementById('display').value = previous + ' ' + operator;
+            current = ''; //empty and now enter next number
+        }
+
+
+
+        function clearDisplay() {
+            current = '';
+            previous = '';
+            operator = '';
+            document.getElementById('display').value = '';
+        }
+
+
+
+        function backspace() {
+            if (current !== '') {
+                current = current.slice(0, -1); // Remove the last character
+                document.getElementById('display').value = current; // Update the display
+            }
+        }
+
+
+        function calculate() {
+            if (current === '' || previous === '' || operator === '') return;
+
+            const prev = parseInt(previous);
+            const curr = parseInt(current);
+            let result;
+
+            switch (operator) {
+                
+                case '+':
+                    result = prev + curr;
+                    break;
+
+                case '-':
+                    result = prev - curr;
+                    break;
+
+                case '*':
+                    result = prev * curr;
+                    break;
+
+                case '/':
+
+                    if (curr !== 0) {
+                        result = prev / curr;
+                    } else {
+                        document.getElementById('display').value = 'Cannot divide by 0';
+                        return;
+                    }
+
+                    break;
+
+                case '%':
+                    result = (prev * curr) / 100;
+                    break;
+
+                default:
+                    return;
+            }
+
+            document.getElementById('display').value = result;
+            // document.getElementById('display').value = previous + ' ' + operator + ' ' + current + ' = ' + result;
+
+            current = result;
+            operator = '';
+            previous = '';
+        }
+    </script>
+
+</body>
+
+</html>

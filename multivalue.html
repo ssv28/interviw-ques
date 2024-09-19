@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <h1 id="ans"></h1>
+
+    <input type="text" id="nums" placeholder="Enter numbers">
+
+    <br>
+    <br>
+
+    <button onclick="calc('+')">+</button>
+    <button onclick="calc('-')">-</button>
+    <button onclick="calc('*')">*</button>
+    <button onclick="calc('/')">/</button>
+    <button onclick="calc('%')">%</button>
+
+
+    <script>
+        function calc(work) {
+            // let nums = document.getElementById('nums').value.split(' ').map(Number);
+
+            let nums = document.getElementById('nums').value
+                .split(' ')
+                .map(el => Number(el.trim()));
+
+            let ans = nums[0]; // Initialize first number
+
+            for (let i = 1; i < nums.length; i++) {
+                let num = nums[i];
+
+                if (work === '+') {
+                    ans += num;
+                } else if (work === '-') {
+                    ans -= num;
+                } else if (work === '*') {
+                    ans *= num;
+                } else if (work === '/') {
+                    ans /= num;
+                } else if (work === '%') {
+                    ans = (ans * num) / 100; 
+                    break;
+                }
+            }
+
+            document.getElementById('ans').innerHTML = "ans: " + ans;
+        }
+    </script>
+
+</body>
+
+</html>

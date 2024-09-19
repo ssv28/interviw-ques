@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1 id="ans"></h1>
+
+    <input type="text" id="nums1" placeholder="Enter numbers">
+
+    <br>
+    <br>
+
+    <button onclick="calc()">Calculate</button>
+
+    <script>
+        function calc() {
+            let input = document.getElementById('nums1').value;
+            let result;
+
+            try {
+                // Use the Function constructor to safely evaluate the expression
+                result = new Function('return ' + input)();
+                
+            } catch (err) {
+                result = 'Error: ' + err.message;
+            }
+
+            document.getElementById('ans').innerHTML = "ans: " + result;
+        }
+    </script>
+
+</body>
+
+</html>
