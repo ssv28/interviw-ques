@@ -5,38 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe</title>
-</head>
-
-<body>
     <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #000;
-        }    
+            background-color: #f4f4f4;
+        }
+
 
         .box {
             width: 150px;
             height: 150px;
             font-size: 50px;
             text-align: center;
-            cursor: pointer;
             background-color: #ddd;
             border: 2px solid #333;
+            cursor: pointer;
             box-sizing: border-box;
         }
 
 
-        .msg-container{
-            color: #ddd;
+        .msg-container {
+            margin-top: 20px;
         }
-        
 
-       
+        .msg-container.show {
+            display: block;
+        }
+
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
     </style>
+</head>
+
+<body>
 
     <div>
         <div style="display: flex;">
@@ -56,14 +65,20 @@
         </div>
     </div>
 
-    <div class="msg-container hide">
+    <!-- win msg -->
+    <div class="msg-container">
         <h1 id="msg"></h1>
+    </div>
+
+    <button class="reset-btn">Reset Game</button>
+
     </div>
 
     <script>
         const boxes = document.querySelectorAll('.box');
         let msgcontainer = document.querySelector(".msg-container");
         let msg = document.querySelector("#msg");
+        let resetButton = document.querySelector('.reset-btn');
 
         const winpattern = [
             [0, 1, 2],
@@ -87,25 +102,29 @@
                     box.innerHTML = "X";
                     turn0 = true;
                 }
+
                 box.disabled = true;
                 checkWinner();
             });
         });
 
+
+
         let disableGame = () => {
             for (box of boxes) {
                 box.disabled = true;
-            }
-
+            };
         };
+
 
 
         let winner = (win) => {
             msg.innerHTML = `Congratulations, winner is ${win}`;
-            msgcontainer.classList.remove("hide")
+            msgcontainer.classList.add("show");
 
             disableGame();
         };
+
 
 
         let checkWinner = () => {
@@ -116,12 +135,27 @@
 
                 if (pos1 !== "" && pos2 !== "" && pos3 !== "") {
                     if (pos1 === pos2 && pos2 === pos3) {
+                        console.log("=============", pos1);
+
                         winner(pos1);
-                        return; // Stop the loop after a winner is found
+
                     }
                 }
             }
         };
+
+
+
+        let resetGame = () => {
+            boxes.forEach((box) => {
+                box.innerHTML = "";
+                box.disabled = false;
+            });
+            msgcontainer.classList.remove("show");
+            turn0 = true;
+        };
+
+        resetButton.addEventListener("click", resetGame);
     </script>
 
 </body>
