@@ -16,7 +16,6 @@
             background-color: #f4f4f4;
         }
 
-
         .box {
             width: 150px;
             height: 150px;
@@ -27,7 +26,6 @@
             cursor: pointer;
             box-sizing: border-box;
         }
-
 
         .msg-container {
             margin-top: 20px;
@@ -72,8 +70,6 @@
 
     <button class="reset-btn">Reset Game</button>
 
-    </div>
-
     <script>
         const boxes = document.querySelectorAll('.box');
         let msgcontainer = document.querySelector(".msg-container");
@@ -82,51 +78,50 @@
 
         const winpattern = [
             [0, 1, 2],
-            [0, 4, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 4, 6],
-            [2, 5, 8],
             [3, 4, 5],
             [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
         ];
 
         let turn0 = true;
+        let gameOver = false; // To track the game state
 
-        boxes.forEach((box) => {
+        // Player (O) makes a move
+        boxes.forEach((box, index) => {
             box.addEventListener("click", () => {
-                if (turn0) {
-                    box.innerHTML = "O";
-                    turn0 = false;
-                } else {
-                    box.innerHTML = "X";
-                    turn0 = true;
+                if (!box.disabled && !gameOver) {
+                    if (turn0) {
+                        box.innerHTML = "O";
+                        box.disabled = true;
+                        checkWinner();
+                        if (!gameOver) {
+                            computerMove(); // Computer makes its move after the player
+                        }
+                    }
                 }
-
-                box.disabled = true;
-                checkWinner();
             });
         });
 
-
-
+        // Disable the game once a winner is found
         let disableGame = () => {
-            for (box of boxes) {
+            for (let box of boxes) {
                 box.disabled = true;
-            };
+            }
         };
 
-
-
+        // Announce the winner
         let winner = (win) => {
             msg.innerHTML = `Congratulations, winner is ${win}`;
             msgcontainer.classList.add("show");
-
             disableGame();
+            gameOver = true;
         };
 
-
-
+        // Check if there's a winner after each move
         let checkWinner = () => {
             for (let pattern of winpattern) {
                 let pos1 = boxes[pattern[0]].innerHTML;
@@ -135,32 +130,44 @@
 
                 if (pos1 !== "" && pos2 !== "" && pos3 !== "") {
                     if (pos1 === pos2 && pos2 === pos3) {
-                        console.log("=============", pos1);
-
                         winner(pos1);
-
+                        return;
                     }
                 }
             }
+
+            // Check if it's a draw
+            if (Array.from(boxes).every(box => box.innerHTML !== "")) {
+                msg.innerHTML = "It's a draw!";
+                msgcontainer.classList.add("show");
+                gameOver = true;
+            }
         };
 
+        // Simple AI: Computer selects a random available box
+        let computerMove = () => {
+            let availableBoxes = Array.from(boxes).filter(box => box.innerHTML === "");
+            if (availableBoxes.length > 0) {
+                let randomBox = availableBoxes[Math.floor(Math.random() * availableBoxes.length)];
+                randomBox.innerHTML = "X";
+                randomBox.disabled = true;
+                checkWinner();
+            }
+        };
 
-
-       
-
+        // Reset the game
         let resetGame = () => {
             boxes.forEach((box) => {
-                box.innerHTML = "";    
-                box.disabled = false; 
+                box.innerHTML = "";    // Clear the content of each box
+                box.disabled = false;  // Re-enable the boxes
             });
-            
-            msg.innerHTML = "";        
-            msgcontainer.classList.remove("show"); 
+            msg.innerHTML = "";        // Clear the winner message
+            msgcontainer.classList.remove("show"); // Hide the message container
+            turn0 = true;              // Reset the turn to the player
+            gameOver = false;          // Reset the game state
         };
 
         resetButton.addEventListener("click", resetGame);
-
-
     </script>
 
 </body>

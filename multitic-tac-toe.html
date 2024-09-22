@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Tic-Tac-Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .game-board {
+            display: grid;
+            grid-gap: 10px;
+            margin-top: 20px;
+        }
+
+        .box {
+            width: 80px;
+            height: 80px;
+            font-size: 40px;
+            background-color: #ddd;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .msg-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .msg-container.show {
+            display: block;
+        }
+
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Dropdown to select grid size -->
+    <label for="grid-size">Select Grid Size:</label>
+    <select id="grid-size">
+        <option value="2">2 x 2</option>
+        <option value="3" selected>3 x 3</option>
+        <option value="4">4 x 4</option>
+        <option value="5">5 x 5</option>
+    </select>
+
+    <!-- Game board container -->
+    <div class="game-board" id="game-board"></div>
+
+    <!-- Message container -->
+    <div class="msg-container">
+        <h1 id="msg">WIN</h1>
+    </div>
+
+    <!-- Reset Button -->
+    <button class="reset-btn" id="reset-btn">Reset Game</button>
+
+    <script>
+        const gameBoard = document.getElementById('game-board');
+        const resetButton = document.getElementById('reset-btn');
+        const gridSizeSelect = document.getElementById('grid-size');
+        let msgcontainer = document.querySelector(".msg-container");
+        let msg = document.querySelector("#msg");
+
+        let gridSize = parseInt(gridSizeSelect.value);
+        let boxes = [];
+        let turn0 = true;
+
+        // Generate a dynamic game board based on the selected grid size
+        const createBoard = (size) => {
+            gameBoard.innerHTML = ''; // Clear the previous board
+            gameBoard.style.gridTemplateColumns = `repeat(${size}, 1fr)`; // Set dynamic grid columns
+
+            boxes = [];
+            for (let i = 0; i < size * size; i++) {
+                const box = document.createElement('button');
+                box.classList.add('box');
+                gameBoard.appendChild(box);
+                boxes.push(box);
+            }
+
+            addClickListeners();
+        };
+
+        // Add click listeners to each box
+        const addClickListeners = () => {
+            boxes.forEach((box) => {
+                box.addEventListener("click", () => {
+                    if (turn0) {
+                        box.innerHTML = "O";
+                        turn0 = false;
+                    } else {
+                        box.innerHTML = "X";
+                        turn0 = true;
+                    }
+                    box.disabled = true;
+                    checkWinner();
+                });
+            });
+        };
+
+        // Reset the game board
+        const resetGame = () => {
+            boxes.forEach((box) => {
+                box.innerHTML = "";
+                box.disabled = false;
+            });
+            msgcontainer.classList.remove("show");
+            turn0 = true;
+        };
+
+        // Calculate winning conditions dynamically
+        const checkWinner = () => {
+            let size = parseInt(gridSizeSelect.value);
+            let winPatterns = getWinPatterns(size);
+            for (let pattern of winPatterns) {
+                let pos1 = boxes[pattern[0]].innerHTML;
+                let pos2 = boxes[pattern[1]].innerHTML;
+                let pos3 = boxes[pattern[2]].innerHTML;
+                if (pos1 !== "" && pos1 === pos2 && pos2 === pos3) {
+                    winner(pos1);
+                    return;
+                }
+            }
+        };
+
+        const winner = (win) => {
+            msg.innerHTML = `Congratulations, ${win} wins!`;
+            msgcontainer.classList.add("show");
+            disableGame();
+        };
+
+        const disableGame = () => {
+            boxes.forEach((box) => {
+                box.disabled = true;
+            });
+        };
+
+        // Get dynamic winning patterns for NxN board
+        const getWinPatterns = (size) => {
+            let patterns = [];
+
+            // Rows
+            for (let row = 0; row < size; row++) {
+                let pattern = [];
+                for (let col = 0; col < size; col++) {
+                    pattern.push(row * size + col);
+                }
+                patterns.push(pattern);
+            }
+
+            // Columns
+            for (let col = 0; col < size; col++) {
+                let pattern = [];
+                for (let row = 0; row < size; row++) {
+                    pattern.push(row * size + col);
+                }
+                patterns.push(pattern);
+            }
+
+            // Diagonal 1 (Top-left to bottom-right)
+            let diag1 = [];
+            for (let i = 0; i < size; i++) {
+                diag1.push(i * size + i);
+            }
+            patterns.push(diag1);
+
+            // Diagonal 2 (Top-right to bottom-left)
+            let diag2 = [];
+            for (let i = 0; i < size; i++) {
+                diag2.push(i * size + (size - i - 1));
+            }
+            patterns.push(diag2);
+
+            return patterns;
+        };
+
+        // Create the initial 3x3 board
+        createBoard(gridSize);
+
+        // Reset game when the reset button is clicked
+        resetButton.addEventListener("click", resetGame);
+
+        // Change the grid size when the dropdown is changed
+        gridSizeSelect.addEventListener("change", (e) => {
+            gridSize = parseInt(e.target.value);
+            createBoard(gridSize);
+            resetGame();
+        });
+
+    </script>
+
+</body>
+
+</html>
