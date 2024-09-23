@@ -99,7 +99,7 @@
                         box.disabled = true;
                         checkWinner();
                         if (!gameOver) {
-                            computerMove(); // Computer makes its move after the player
+                            computerMode(); // Computer makes its move after the player
                         }
                     }
                 }
@@ -113,7 +113,7 @@
             }
         };
 
-        // Announce the winner
+        // winner thy
         let winner = (win) => {
             msg.innerHTML = `Congratulations, winner is ${win}`;
             msgcontainer.classList.add("show");
@@ -145,7 +145,7 @@
         };
 
         // Simple AI: Computer selects a random available box
-        let computerMove = () => {
+        let computerMode = () => {
             let availableBoxes = Array.from(boxes).filter(box => box.innerHTML === "");
             if (availableBoxes.length > 0) {
                 let randomBox = availableBoxes[Math.floor(Math.random() * availableBoxes.length)];
@@ -158,16 +158,17 @@
         // Reset the game
         let resetGame = () => {
             boxes.forEach((box) => {
-                box.innerHTML = "";    // Clear the content of each box
-                box.disabled = false;  // Re-enable the boxes
+                box.innerHTML = "";    // Clear thase bdha box
+                box.disabled = false;  
             });
-            msg.innerHTML = "";        // Clear the winner message
-            msgcontainer.classList.remove("show"); // Hide the message container
-            turn0 = true;              // Reset the turn to the player
-            gameOver = false;          // Reset the game state
+            msg.innerHTML = "";        // Clear message
+            msgcontainer.classList.remove("show"); // Hide message
+            turn0 = true;              // Reset the turn 
+            gameOver = false;          // Reset the game 
         };
 
         resetButton.addEventListener("click", resetGame);
+
     </script>
 
 </body>
